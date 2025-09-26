@@ -1,15 +1,18 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io'); // updated import
 require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
+
+// ✅ Socket.io setup with public CORS
+const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*", // public access
     methods: ["GET", "POST"]
   }
 });
@@ -18,25 +21,31 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB with proper error handling
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pollingapp', {
+// ✅ MongoDB Connection
+const mongoURI = process.env.MONGODB_URI; // must set in Railway env variables
+if (!mongoURI) {
+  console.error("MongoDB URI not found in environment variables!");
+  process.exit(1);
+}
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => {
-  console.log('MongoDB Connected successfully!');
-})
+.then(() => console.log('MongoDB Connected successfully!'))
 .catch((error) => {
-  console.log('MongoDB Connection Error:', error.message);
+  console.error('MongoDB Connection Error:', error.message);
+  process.exit(1);
 });
 
 // Poll Model
 const Poll = require('./models/Poll');
 
-// Routes
-app.use('/api/polls', require('./routes/pollRoutes'));
+// ✅ Routes - ensure GET route exists
+const pollRoutes = require('./routes/pollRoutes');
+app.use('/api/polls', pollRoutes);
 
-// Socket.io for real-time updates
+// Socket.io real-time updates
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
   
@@ -45,6 +54,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// ✅ PORT for Railway
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

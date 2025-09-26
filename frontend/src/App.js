@@ -5,7 +5,9 @@ import CreatePoll from './components/CreatePoll.js';
 import PollList from './components/PollList.js';
 import './App.css';
 
-const socket = io('http://localhost:5000');
+// ✅ Use environment variable for backend URL
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const socket = io(API_URL);
 
 function App() {
   const [polls, setPolls] = useState([]);
@@ -32,7 +34,7 @@ function App() {
 
   const fetchPolls = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/polls');
+      const response = await axios.get(`${API_URL}/api/polls`);
       setPolls(response.data);
       setLoading(false);
     } catch (error) {
