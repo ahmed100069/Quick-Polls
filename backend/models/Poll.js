@@ -1,3 +1,4 @@
+// models/Poll.js - CORRECT VERSION
 const mongoose = require('mongoose');
 
 const pollSchema = new mongoose.Schema({
@@ -9,7 +10,8 @@ const pollSchema = new mongoose.Schema({
   options: [{
     text: {
       type: String,
-      required: true
+      required: true,
+      trim: true
     },
     votes: {
       type: Number,
@@ -18,12 +20,9 @@ const pollSchema = new mongoose.Schema({
   }],
   createdBy: {
     type: String,
-    default: 'Anonymous'
+    default: 'Anonymous',
+    trim: true
   },
-  voters: [{
-    type: String,
-    default: []
-  }],
   createdAt: {
     type: Date,
     default: Date.now

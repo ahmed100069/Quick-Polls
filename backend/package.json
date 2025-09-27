@@ -1,7 +1,7 @@
 {
   "name": "polling-app-backend",
   "version": "1.0.0",
-  "description": "Real-time polling app backend",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -11,10 +11,10 @@
     "express": "^4.18.2",
     "mongoose": "^7.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "socket.io": "^4.6.0"
+    "socket.io": "^4.7.2",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.22"
   }
 }
